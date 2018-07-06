@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'country.dart';
 import 'package:diacritic/diacritic.dart';
 
-const _platform = const MethodChannel('biessek.rocks/country-picker');
+const _platform = const MethodChannel('biessek.rocks/flutter_country_picker');
 Future<List<Country>> _fetchLocalizedCountryNames() async {
   List<Country> renamed = new List();
   Map result;
