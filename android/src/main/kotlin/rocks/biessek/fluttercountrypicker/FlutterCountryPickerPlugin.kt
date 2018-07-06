@@ -1,4 +1,4 @@
-package com.example.fluttercountrypicker
+package rocks.biessek.fluttercountrypicker
 
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -9,10 +9,11 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class FlutterCountryPickerPlugin(): MethodCallHandler {
-  private val CHANNEL = "biessek.rocks/flutter_country_picker"
-  private val GET_COUNTRY_NAMES = "getCountryNames"
 
   companion object {
+    private val CHANNEL = "biessek.rocks/flutter_country_picker"
+    private val GET_COUNTRY_NAMES = "getCountryNames"
+    
     @JvmStatic
     fun registerWith(registrar: Registrar): Unit {
       val channel = MethodChannel(registrar.messenger(), CHANNEL)
@@ -21,7 +22,7 @@ class FlutterCountryPickerPlugin(): MethodCallHandler {
   }
 
   override fun onMethodCall(call: MethodCall, result: Result): Unit {
-    if (call.method.equals(GET_COUNTRY_NAMES))) {
+    if (call.method.equals(GET_COUNTRY_NAMES)) {
       result.success(getAllCountryNames(call.argument("isoCodes")))
     } else {
       result.notImplemented()
