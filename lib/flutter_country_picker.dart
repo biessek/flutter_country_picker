@@ -30,6 +30,8 @@ Future<List<Country>> _fetchLocalizedCountryNames() async {
   return renamed;
 }
 
+/// The country picker widget exposes an dialog to select a country from a
+/// pre defined list, see [Country.ALL]
 class CountryPicker extends StatelessWidget {
   const CountryPicker({
     Key key,
@@ -117,6 +119,8 @@ class CountryPicker extends StatelessWidget {
   }
 }
 
+/// Display an [Dialog] with the country list to selection
+/// you can pass and [defaultCountry], see [Country.findByIsoCode]
 Future<Country> showCountryPicker({
   BuildContext context,
   Country defaultCountry,

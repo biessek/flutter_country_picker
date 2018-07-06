@@ -1,12 +1,20 @@
 import 'package:meta/meta.dart';
-import 'package:quiver/core.dart';
 
+/// A country definition with image asset, dialing code and localized name.
 class Country {
+  /// the flag image asset name
   final String asset;
+
+  /// the dialing code
   final String dialingCode;
+
+  /// the 2-letter ISO code
   final String isoCode;
+
+  /// the localized / English country name
   final String name;
 
+  /// Instantiates an [Country] with the specified [asset], [dialingCode] and [isoCode]
   const Country({
     @required this.asset,
     @required this.dialingCode,
@@ -22,12 +30,14 @@ class Country {
       o.asset == this.asset &&
       o.name == this.name;
 
-  int get hashCode => hash4(
-        this.dialingCode.hashCode,
-        this.asset.hashCode,
-        this.name.hashCode,
-        this.isoCode.hashCode,
-      );
+  int get hashCode {
+    int hash = 7;
+    hash = 31 * hash + this.dialingCode.hashCode;
+    hash = 31 * hash + this.asset.hashCode;
+    hash = 31 * hash + this.name.hashCode;
+    hash = 31 * hash + this.isoCode.hashCode;
+    return hash;
+  }
 
   static const Country AD = Country(
     asset: "assets/flags/ad_flag.png",
@@ -1275,6 +1285,8 @@ class Country {
     isoCode: "ZW",
   );
 
+
+  /// All the countries in the picker list
   static const ALL = <Country>[
     AD,
     AE,
@@ -1527,12 +1539,15 @@ class Country {
     ZW,
   ];
 
+  /// returns an country with the specified [isoCode] or ```null``` if 
+  /// none or more than 1 are found
   static findByIsoCode(String isoCode) {
     return ALL.singleWhere(
       (item) => item.isoCode == isoCode,
     );
   }
 
+  /// Creates a copy with modified values
   Country copyWith({
     String name,
     String isoCode,
