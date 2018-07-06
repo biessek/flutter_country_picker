@@ -65,6 +65,7 @@ class CountryPicker extends StatelessWidget {
         children: <Widget>[
           Image.asset(
             displayCountry.asset,
+            package: "flutter_country_picker",
             height: 48.0,
             fit: BoxFit.fitWidth,
           ),
@@ -89,6 +90,7 @@ class CountryPicker extends StatelessWidget {
         children: <Widget>[
           Image.asset(
             displayCountry.asset,
+            package: "flutter_country_picker",
             height: 24.0,
             fit: BoxFit.fitWidth,
           ),
@@ -210,7 +212,10 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
                           trailing: Text("+ ${country.dialingCode}"),
                           title: Row(
                             children: <Widget>[
-                              Image.asset(country.asset),
+                              Image.asset(
+                                country.asset,
+                                package: "flutter_country_picker",
+                              ),
                               Expanded(
                                 child: Container(
                                   margin: EdgeInsets.only(left: 8.0),
