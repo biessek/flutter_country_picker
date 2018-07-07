@@ -1,8 +1,11 @@
 name: flutter_country_picker
 description: A new flutter plugin project.
 version: 0.0.1
-author:
-homepage:
+author: Alessandro Biessek <alessandro@biessek.rocks>
+homepage: https://github.com/biessek/flutter_country_picker
+
+environment:
+  sdk: ">=1.19.0  <=2.0.0"
 
 dependencies:
   flutter:

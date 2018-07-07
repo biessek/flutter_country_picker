@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 /// A country definition with image asset, dialing code and localized name.
 class Country {
   /// the flag image asset name
