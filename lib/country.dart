@@ -1534,7 +1534,6 @@ class Country {
     name: "Zimbabwe",
   );
 
-
   /// All the countries in the picker list
   static const ALL = <Country>[
     AD,
@@ -1788,7 +1787,7 @@ class Country {
     ZW,
   ];
 
-  /// returns an country with the specified [isoCode] or ```null``` if 
+  /// returns an country with the specified [isoCode] or ```null``` if
   /// none or more than 1 are found
   static findByIsoCode(String isoCode) {
     return ALL.singleWhere(
