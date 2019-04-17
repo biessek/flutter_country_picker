@@ -38,17 +38,17 @@ class CountryPicker extends StatelessWidget {
     this.selectedCountry,
     @required this.onChanged,
     this.dense = false,
-    this.showName = true,
-    this.showDialingCode = false,
     this.showFlag = true,
+    this.showDialingCode = false,
+    this.showName = true,
   }) : super(key: key);
 
   final Country selectedCountry;
   final ValueChanged<Country> onChanged;
   final bool dense;
-  final bool showName;
-  final bool showDialingCode;
   final bool showFlag;
+  final bool showDialingCode;
+  final bool showName;
 
   @override
   Widget build(BuildContext context) {
