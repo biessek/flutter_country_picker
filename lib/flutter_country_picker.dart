@@ -38,9 +38,9 @@ class CountryPicker extends StatelessWidget {
     this.selectedCountry,
     @required this.onChanged,
     this.dense = false,
-    this.showName,
-    this.showDialingCode,
-    this.showFlag,
+    this.showName = true,
+    this.showDialingCode = false,
+    this.showFlag = true,
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -76,7 +76,7 @@ class CountryPicker extends StatelessWidget {
                   ? Image.asset(
                       displayCountry.asset,
                       package: "flutter_country_picker",
-                      height: 32.0, //48.0 to 32.0
+                      height: 32.0,
                       fit: BoxFit.fitWidth,
                     )
                   : null),

@@ -35,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: new Center(
         child: CountryPicker(
+          showDialingCode: true,
           onChanged: (Country country) {
             setState(() {
               _selected = country;
