@@ -79,21 +79,21 @@ class CountryPicker extends StatelessWidget {
                       height: 32.0,
                       fit: BoxFit.fitWidth,
                     )
-                  : null),
+                  : Container()),
           Container(
               child: showDialingCode
                   ? Text(
                       " (+${displayCountry.dialingCode})",
                       style: TextStyle(fontSize: 20.0),
                     )
-                  : null),
+                  : Container()),
           Container(
               child: showName
                   ? Text(
                       " ${displayCountry.name}",
                       style: TextStyle(fontSize: 22.0),
                     )
-                  : null),
+                  : Container()),
           Icon(Icons.arrow_drop_down,
               color: Theme.of(context).brightness == Brightness.light
                   ? Colors.grey.shade700
