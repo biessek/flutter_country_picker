@@ -1,4 +1,4 @@
-[![Pub](https://img.shields.io/badge/Pub-0.1.2-orange.svg?style=flat-square)](https://pub.dartlang.org/packages/flutter_country_picker)
+[![Pub](https://img.shields.io/badge/Pub-0.1.3-orange.svg?style=flat-square)](https://pub.dartlang.org/packages/flutter_country_picker)
 
 # flutter_country_picker
 A Flutter Country Picker Widget with support to country dialing codes
