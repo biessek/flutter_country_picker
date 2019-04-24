@@ -13,6 +13,10 @@ Add the CountryPicker widget in your layout and use the `onChanged` callback.
 
  ```dart
 
+// Option to show what to display of the selected country when 'dense' is false,
+// Only displays country's flag when dense is true.
+
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -21,6 +25,10 @@ Add the CountryPicker widget in your layout and use the `onChanged` callback.
       ),
       body: new Center(
         child: CountryPicker(
+          dense: false,
+          showFlag: true,  //displays flag, true by default
+          showDialingCode: false, //displays dialing code, false by default
+          showName: true, //displays country name, true by default
           onChanged: (Country country) {
             setState(() {
               _selected = country;

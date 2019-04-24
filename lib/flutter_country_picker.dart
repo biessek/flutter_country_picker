@@ -38,11 +38,17 @@ class CountryPicker extends StatelessWidget {
     this.selectedCountry,
     @required this.onChanged,
     this.dense = false,
+    this.showFlag = true,
+    this.showDialingCode = false,
+    this.showName = true,
   }) : super(key: key);
 
   final Country selectedCountry;
   final ValueChanged<Country> onChanged;
   final bool dense;
+  final bool showFlag;
+  final bool showDialingCode;
+  final bool showName;
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +71,29 @@ class CountryPicker extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Image.asset(
-            displayCountry.asset,
-            package: "flutter_country_picker",
-            height: 48.0,
-            fit: BoxFit.fitWidth,
-          ),
-          Text(" (+ ${displayCountry.dialingCode})"),
+          Container(
+              child: showFlag
+                  ? Image.asset(
+                      displayCountry.asset,
+                      package: "flutter_country_picker",
+                      height: 32.0,
+                      fit: BoxFit.fitWidth,
+                    )
+                  : Container()),
+          Container(
+              child: showDialingCode
+                  ? Text(
+                      " (+${displayCountry.dialingCode})",
+                      style: TextStyle(fontSize: 20.0),
+                    )
+                  : Container()),
+          Container(
+              child: showName
+                  ? Text(
+                      " ${displayCountry.name}",
+                      style: TextStyle(fontSize: 22.0),
+                    )
+                  : Container()),
           Icon(Icons.arrow_drop_down,
               color: Theme.of(context).brightness == Brightness.light
                   ? Colors.grey.shade700
