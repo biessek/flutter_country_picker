@@ -13,3 +13,7 @@ Upgraded to latest gradle + kotlin versions
 ## 0.1.3
 ___
 Add display flags
+
+## 0.1.4
+___
+Capitalize Andorra's country name 
