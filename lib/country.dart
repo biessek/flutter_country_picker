@@ -43,7 +43,7 @@ class Country {
     asset: "assets/flags/ad_flag.png",
     dialingCode: "376",
     isoCode: "AD",
-    name: "andorra",
+    name: "Andorra",
   );
   static const Country AE = Country(
     asset: "assets/flags/ae_flag.png",
