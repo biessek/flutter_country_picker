@@ -41,6 +41,8 @@ class CountryPicker extends StatelessWidget {
     this.showFlag = true,
     this.showDialingCode = false,
     this.showName = true,
+    this.showCurrency,
+    this.showCurrencyISO,
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -49,6 +51,8 @@ class CountryPicker extends StatelessWidget {
   final bool showFlag;
   final bool showDialingCode;
   final bool showName;
+  final bool showCurrency;
+  final bool showCurrencyISO;
 
   @override
   Widget build(BuildContext context) {
@@ -71,29 +75,38 @@ class CountryPicker extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Container(
-              child: showFlag
-                  ? Image.asset(
-                      displayCountry.asset,
-                      package: "flutter_country_picker",
-                      height: 32.0,
-                      fit: BoxFit.fitWidth,
-                    )
-                  : Container()),
-          Container(
-              child: showDialingCode
-                  ? Text(
-                      " (+${displayCountry.dialingCode})",
-                      style: TextStyle(fontSize: 20.0),
-                    )
-                  : Container()),
-          Container(
-              child: showName
-                  ? Text(
-                      " ${displayCountry.name}",
-                      style: TextStyle(fontSize: 22.0),
-                    )
-                  : Container()),
+          if (showFlag)
+            Container(
+                child: Image.asset(
+              displayCountry.asset,
+              package: "flutter_country_picker",
+              height: 32.0,
+              fit: BoxFit.fitWidth,
+            )),
+          if (showName)
+            Container(
+                child: Text(
+              " ${displayCountry.name}",
+              style: TextStyle(fontSize: 22.0),
+            )),
+          if (showDialingCode)
+            Container(
+                child: Text(
+              " (+${displayCountry.dialingCode})",
+              style: TextStyle(fontSize: 20.0),
+            )),
+          if (showCurrency)
+            Container(
+                child: Text(
+              " ${displayCountry.currency}",
+              style: TextStyle(fontSize: 20.0),
+            )),
+          if (showCurrencyISO)
+            Container(
+                child: Text(
+              " ${displayCountry.currencyISO}",
+              style: TextStyle(fontSize: 20.0),
+            )),
           Icon(Icons.arrow_drop_down,
               color: Theme.of(context).brightness == Brightness.light
                   ? Colors.grey.shade700
@@ -193,8 +206,8 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
 
   @override
   void dispose() {
-    super.dispose();
     controller.dispose();
+    super.dispose();
   }
 
   @override

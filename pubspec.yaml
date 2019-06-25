@@ -5,7 +5,8 @@ author: Alessandro Biessek <alessandrobiessek@gmail.com>
 homepage: https://github.com/biessek/flutter_country_picker
 
 environment:
-  sdk: ">=2.0.0-dev.28.0 <3.0.0"
+  sdk: ">=2.3.0-dev.0.5 <3.0.0"
+#  sdk: ">=2.0.0-dev.28.0 <3.0.0"
 
 dependencies:
   flutter:
