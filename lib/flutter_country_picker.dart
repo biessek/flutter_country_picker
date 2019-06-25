@@ -43,6 +43,10 @@ class CountryPicker extends StatelessWidget {
     this.showName = true,
     this.showCurrency,
     this.showCurrencyISO,
+    this.nameTextStyle,
+    this.dialingCodeTextStyle,
+    this.currencyTextStyle,
+    this.currencyISOTextStyle,
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -53,6 +57,10 @@ class CountryPicker extends StatelessWidget {
   final bool showName;
   final bool showCurrency;
   final bool showCurrencyISO;
+  final TextStyle nameTextStyle;
+  final TextStyle dialingCodeTextStyle;
+  final TextStyle currencyTextStyle;
+  final TextStyle currencyISOTextStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -87,25 +95,25 @@ class CountryPicker extends StatelessWidget {
             Container(
                 child: Text(
               " ${displayCountry.name}",
-              style: TextStyle(fontSize: 22.0),
+              style: nameTextStyle,
             )),
           if (showDialingCode)
             Container(
                 child: Text(
               " (+${displayCountry.dialingCode})",
-              style: TextStyle(fontSize: 20.0),
+              style: dialingCodeTextStyle,
             )),
           if (showCurrency)
             Container(
                 child: Text(
               " ${displayCountry.currency}",
-              style: TextStyle(fontSize: 20.0),
+              style: currencyTextStyle,
             )),
           if (showCurrencyISO)
             Container(
                 child: Text(
               " ${displayCountry.currencyISO}",
-              style: TextStyle(fontSize: 20.0),
+              style: currencyISOTextStyle,
             )),
           Icon(Icons.arrow_drop_down,
               color: Theme.of(context).brightness == Brightness.light
