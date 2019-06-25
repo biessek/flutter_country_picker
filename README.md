@@ -12,9 +12,19 @@ Add the CountryPicker widget in your layout and use the `onChanged` callback.
 [Full example](https://github.com/biessek/flutter_country_picker/tree/master/example)
 
  ```dart
+ 
+ ///Uses latest dart with support for 'collection if' statement
 
-// Option to show what to display of the selected country when 'dense' is false,
-// Only displays country's flag when dense is true.
+///full Great Britain sample.
+
+///static const Country GB = Country(
+///    asset: "assets/flags/gb_flag.png",
+///    dialingCode: "44",
+///    isoCode: "GB",
+///    name: "United Kingdom",
+///    currency: "British pound",
+///    currencyISO: "GBP",
+///  );
 
 
   @override
@@ -29,6 +39,8 @@ Add the CountryPicker widget in your layout and use the `onChanged` callback.
           showFlag: true,  //displays flag, true by default
           showDialingCode: false, //displays dialing code, false by default
           showName: true, //displays country name, true by default
+          showCurrency: false, //eg. 'British pound'
+          showCurrencyISO: true, //eg. 'GBP'
           onChanged: (Country country) {
             setState(() {
               _selected = country;
