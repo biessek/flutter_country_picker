@@ -141,7 +141,7 @@ class CountryPicker extends StatelessWidget {
   }
 }
 
-/// Display an [Dialog] with the country list to selection
+/// Display a [Dialog] with the country list to selection
 /// you can pass and [defaultCountry], see [Country.findByIsoCode]
 Future<Country> showCountryPicker({
   BuildContext context,
