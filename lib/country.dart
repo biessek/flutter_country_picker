@@ -49,7 +49,7 @@ class Country {
     asset: "assets/flags/ad_flag.png",
     dialingCode: "376",
     isoCode: "AD",
-    name: "andorra",
+    name: "Andorra",
     currency: "Euro",
     currencyISO: "EUR",
   );
