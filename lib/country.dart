@@ -1550,7 +1550,7 @@ class Country {
     AL,
     AM,
     AN,
-    AN,
+
     AO,
     AQ,
     AR,
