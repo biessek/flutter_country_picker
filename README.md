@@ -29,6 +29,7 @@ Add the CountryPicker widget in your layout and use the `onChanged` callback.
           showFlag: true,  //displays flag, true by default
           showDialingCode: false, //displays dialing code, false by default
           showName: true, //displays country name, true by default
+          limitCountries: ['IE', 'US', 'PL'] // limits country choice to listed countries
           onChanged: (Country country) {
             setState(() {
               _selected = country;

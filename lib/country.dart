@@ -1795,6 +1795,20 @@ class Country {
     );
   }
 
+  /// returns a list of selected countries by comparing [isoCode]s
+  /// incorrect [isoCode]s are ignored
+  static List<Country> selectByIsoCode(List isoCodes) {
+    var countries = <Country>[];
+    isoCodes.forEach((code) {
+      Country c =
+          ALL.singleWhere((item) => item.isoCode == code, orElse: () => null);
+      if (c != null) {
+        countries.add(c);
+      }
+    });
+    return countries;
+  }
+
   /// Creates a copy with modified values
   Country copyWith({
     String name,

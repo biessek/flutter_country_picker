@@ -7,21 +7,23 @@ import 'package:diacritic/diacritic.dart';
 export 'country.dart';
 
 const _platform = const MethodChannel('biessek.rocks/flutter_country_picker');
-Future<List<Country>> _fetchLocalizedCountryNames() async {
+
+Future<List<Country>> _fetchLocalizedCountryNames(
+    List<Country> countries) async {
   List<Country> renamed = new List();
   Map result;
   try {
     var isoCodes = <String>[];
-    Country.ALL.forEach((Country country) {
+    countries.forEach((Country country) {
       isoCodes.add(country.isoCode);
     });
     result = await _platform.invokeMethod(
         'getCountryNames', <String, dynamic>{'isoCodes': isoCodes});
   } on PlatformException catch (e) {
-    return Country.ALL;
+    return countries;
   }
 
-  for (var country in Country.ALL) {
+  for (var country in countries) {
     renamed.add(country.copyWith(name: result[country.isoCode]));
   }
   renamed.sort(
@@ -41,6 +43,7 @@ class CountryPicker extends StatelessWidget {
     this.showFlag = true,
     this.showDialingCode = false,
     this.showName = true,
+    this.limitCountries = const [],
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -49,6 +52,7 @@ class CountryPicker extends StatelessWidget {
   final bool showFlag;
   final bool showDialingCode;
   final bool showName;
+  final List limitCountries;
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +65,12 @@ class CountryPicker extends StatelessWidget {
     }
 
     return dense
-        ? _renderDenseDisplay(context, displayCountry)
-        : _renderDefaultDisplay(context, displayCountry);
+        ? _renderDenseDisplay(context, displayCountry, limitCountries)
+        : _renderDefaultDisplay(context, displayCountry, limitCountries);
   }
 
-  _renderDefaultDisplay(BuildContext context, Country displayCountry) {
+  _renderDefaultDisplay(
+      BuildContext context, Country displayCountry, List limitCountries) {
     return InkWell(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -101,12 +106,13 @@ class CountryPicker extends StatelessWidget {
         ],
       ),
       onTap: () {
-        _selectCountry(context, displayCountry);
+        _selectCountry(context, displayCountry, limitCountries);
       },
     );
   }
 
-  _renderDenseDisplay(BuildContext context, Country displayCountry) {
+  _renderDenseDisplay(
+      BuildContext context, Country displayCountry, List limitCountries) {
     return InkWell(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -125,17 +131,17 @@ class CountryPicker extends StatelessWidget {
         ],
       ),
       onTap: () {
-        _selectCountry(context, displayCountry);
+        _selectCountry(context, displayCountry, limitCountries);
       },
     );
   }
 
   Future<Null> _selectCountry(
-      BuildContext context, Country defaultCountry) async {
+      BuildContext context, Country defaultCountry, List limitCountries) async {
     final Country picked = await showCountryPicker(
-      context: context,
-      defaultCountry: defaultCountry,
-    );
+        context: context,
+        defaultCountry: defaultCountry,
+        limitCountries: limitCountries);
 
     if (picked != null && picked != selectedCountry) onChanged(picked);
   }
@@ -143,25 +149,22 @@ class CountryPicker extends StatelessWidget {
 
 /// Display an [Dialog] with the country list to selection
 /// you can pass and [defaultCountry], see [Country.findByIsoCode]
-Future<Country> showCountryPicker({
-  BuildContext context,
-  Country defaultCountry,
-}) async {
+Future<Country> showCountryPicker(
+    {BuildContext context, Country defaultCountry, List limitCountries}) async {
   assert(Country.findByIsoCode(defaultCountry.isoCode) != null);
 
   return await showDialog<Country>(
     context: context,
     builder: (BuildContext context) => _CountryPickerDialog(
-          defaultCountry: defaultCountry,
-        ),
+        defaultCountry: defaultCountry, limitCountries: limitCountries),
   );
 }
 
 class _CountryPickerDialog extends StatefulWidget {
-  const _CountryPickerDialog({
-    Key key,
-    Country defaultCountry,
-  }) : super(key: key);
+  const _CountryPickerDialog(
+      {Key key, Country defaultCountry, this.limitCountries})
+      : super(key: key);
+  final List limitCountries;
 
   @override
   State<StatefulWidget> createState() => _CountryPickerDialogState();
@@ -176,9 +179,11 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
   void initState() {
     super.initState();
 
-    countries = Country.ALL;
+    countries = widget.limitCountries.length > 0
+        ? Country.selectByIsoCode(widget.limitCountries)
+        : Country.ALL;
 
-    _fetchLocalizedCountryNames().then((renamed) {
+    _fetchLocalizedCountryNames(countries).then((renamed) {
       setState(() {
         countries = renamed;
       });
