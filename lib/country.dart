@@ -1797,11 +1797,14 @@ class Country {
 
  
     /// returns an country with the specified [dialingCode] or ```null``` if
-  /// none or more than 1 are found
+  /// none or 1 are found
   static findByDialingCode(String dialingCode) {
-    return ALL.singleWhere(
-      (item) => item.dialingCode == dialingCode,
-    );
+     for(var item in ALL){
+       if(item.dialingCode == dialingCode){
+        return item;
+       }
+     }
+    return null;
   }
     
     
