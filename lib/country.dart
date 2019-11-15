@@ -1795,6 +1795,18 @@ class Country {
     );
   }
 
+ 
+    /// returns an country with the specified [dialingCode] or ```null``` if
+  /// none or more than 1 are found
+  static findByDialingCode(String dialingCode) {
+    return ALL.singleWhere(
+      (item) => item.dialingCode == dialingCode,
+    );
+  }
+    
+    
+    
+    
   /// Creates a copy with modified values
   Country copyWith({
     String name,
