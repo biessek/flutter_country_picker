@@ -13,10 +13,7 @@ Add the CountryPicker widget in your layout and use the `onChanged` callback.
 
  ```dart
  
- ///Uses latest dart with support for 'collection if' statement
-
 ///full Great Britain sample.
-
 ///static const Country GB = Country(
 ///    asset: "assets/flags/gb_flag.png",
 ///    dialingCode: "44",

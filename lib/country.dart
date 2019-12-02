@@ -34,7 +34,9 @@ class Country {
       o.dialingCode == this.dialingCode &&
       o.isoCode == this.isoCode &&
       o.asset == this.asset &&
-      o.name == this.name;
+      o.name == this.name && 
+      o.currency == this.currency &&
+      o.currencyISO == this.currencyISO;
 
   int get hashCode {
     int hash = 7;
@@ -42,6 +44,8 @@ class Country {
     hash = 31 * hash + this.asset.hashCode;
     hash = 31 * hash + this.name.hashCode;
     hash = 31 * hash + this.isoCode.hashCode;
+    hash = 31 * hash + this.currency.hashCode;
+    hash = 31 * hash + this.currencyISO.hashCode;
     return hash;
   }
 
