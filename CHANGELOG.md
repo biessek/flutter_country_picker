@@ -17,3 +17,7 @@ Add display flags
 ## 0.1.4
 ___
 Capitalize Andorra's country name 
+
+## 0.1.5
+___
+Added countries currency info
