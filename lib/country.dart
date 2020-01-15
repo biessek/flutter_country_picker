@@ -105,6 +105,12 @@ class Country {
     currency: "Armenian dram",
     currencyISO: "AMD",
   );
+  static const Country AN = Country(
+  asset: "assets/flags/an_flag.png"
+  dialingCode: "599",
+  isoCode: "AN"
+  name: "Netherlands Antilles",
+  );
   static const Country AO = Country(
     asset: "assets/flags/ao_flag.png",
     dialingCode: "244",
@@ -2050,6 +2056,8 @@ class Country {
     AI,
     AL,
     AM,
+    AN,
+
     AO,
     AQ,
     AR,
