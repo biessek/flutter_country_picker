@@ -2298,7 +2298,7 @@ class Country {
   /// none or more than 1 are found
   static findByIsoCode(String isoCode) {
     return ALL.singleWhere(
-      (item) => item.isoCode == isoCode,
+      (item) => item.isoCode == isoCode, orElse: () => FR,
     );
   }
 
