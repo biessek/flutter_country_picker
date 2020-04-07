@@ -7,6 +7,7 @@ import 'package:diacritic/diacritic.dart';
 export 'country.dart';
 
 const _platform = const MethodChannel('biessek.rocks/flutter_country_picker');
+
 Future<List<Country>> _fetchLocalizedCountryNames() async {
   List<Country> renamed = new List();
   Map result;
@@ -167,21 +168,26 @@ class CountryPicker extends StatelessWidget {
 Future<Country> showCountryPicker({
   BuildContext context,
   Country defaultCountry,
+  Widget Function(Country country, Image flag) customItemBuilder,
 }) async {
   assert(Country.findByIsoCode(defaultCountry.isoCode) != null);
 
   return await showDialog<Country>(
     context: context,
     builder: (BuildContext context) => _CountryPickerDialog(
-          defaultCountry: defaultCountry,
-        ),
+      defaultCountry: defaultCountry,
+      customItemBuilder: customItemBuilder,
+    ),
   );
 }
 
 class _CountryPickerDialog extends StatefulWidget {
+  final Widget Function(Country country, Image flag) customItemBuilder;
+
   const _CountryPickerDialog({
     Key key,
     Country defaultCountry,
+    this.customItemBuilder,
   }) : super(key: key);
 
   @override
@@ -224,8 +230,8 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
       child: Dialog(
         child: Column(
           children: <Widget>[
-            new TextField(
-              decoration: new InputDecoration(
+            TextField(
+              decoration: InputDecoration(
                 hintText: MaterialLocalizations.of(context).searchFieldLabel,
                 prefixIcon: Icon(Icons.search),
                 suffixIcon: filter == null || filter == ""
@@ -255,27 +261,34 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
                             .contains(filter.toLowerCase()) ||
                         country.isoCode.contains(filter)) {
                       return InkWell(
-                        child: ListTile(
-                          trailing: Text("+ ${country.dialingCode}"),
-                          title: Row(
-                            children: <Widget>[
-                              Image.asset(
-                                country.asset,
-                                package: "flutter_country_picker",
-                              ),
-                              Expanded(
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    country.name,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                        child: widget.customItemBuilder != null
+                            ? widget.customItemBuilder(
+                                country,
+                                Image.asset(
+                                  country.asset,
+                                  package: "flutter_country_picker",
+                                ))
+                            : ListTile(
+                                trailing: Text("+ ${country.dialingCode}"),
+                                title: Row(
+                                  children: <Widget>[
+                                    Image.asset(
+                                      country.asset,
+                                      package: "flutter_country_picker",
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        margin: EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          country.name,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
                         onTap: () {
                           Navigator.pop(context, country);
                         },
