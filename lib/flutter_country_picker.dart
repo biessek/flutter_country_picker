@@ -169,6 +169,7 @@ Future<Country> showCountryPicker({
   BuildContext context,
   Country defaultCountry,
   Widget Function(Country country, Image flag) customItemBuilder,
+  Widget Function(TextEditingController) customInputBuilder,
 }) async {
   assert(Country.findByIsoCode(defaultCountry.isoCode) != null);
 
@@ -177,6 +178,7 @@ Future<Country> showCountryPicker({
     builder: (BuildContext context) => _CountryPickerDialog(
       defaultCountry: defaultCountry,
       customItemBuilder: customItemBuilder,
+      customInputBuilder: customInputBuilder,
     ),
   );
 }
