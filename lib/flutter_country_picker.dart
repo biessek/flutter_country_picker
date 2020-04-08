@@ -183,11 +183,13 @@ Future<Country> showCountryPicker({
 
 class _CountryPickerDialog extends StatefulWidget {
   final Widget Function(Country country, Image flag) customItemBuilder;
+  final Widget Function(TextEditingController) customInputBuilder;
 
   const _CountryPickerDialog({
     Key key,
     Country defaultCountry,
     this.customItemBuilder,
+    this.customInputBuilder,
   }) : super(key: key);
 
   @override
@@ -230,24 +232,27 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
       child: Dialog(
         child: Column(
           children: <Widget>[
-            TextField(
-              decoration: InputDecoration(
-                hintText: MaterialLocalizations.of(context).searchFieldLabel,
-                prefixIcon: Icon(Icons.search),
-                suffixIcon: filter == null || filter == ""
-                    ? Container(
-                        height: 0.0,
-                        width: 0.0,
-                      )
-                    : InkWell(
-                        child: Icon(Icons.clear),
-                        onTap: () {
-                          controller.clear();
-                        },
-                      ),
-              ),
-              controller: controller,
-            ),
+            widget.customInputBuilder == null
+                ? TextField(
+                    decoration: InputDecoration(
+                      hintText:
+                          MaterialLocalizations.of(context).searchFieldLabel,
+                      prefixIcon: Icon(Icons.search),
+                      suffixIcon: filter == null || filter == ""
+                          ? Container(
+                              height: 0.0,
+                              width: 0.0,
+                            )
+                          : InkWell(
+                              child: Icon(Icons.clear),
+                              onTap: () {
+                                controller.clear();
+                              },
+                            ),
+                    ),
+                    controller: controller,
+                  )
+                : widget.customInputBuilder(controller),
             Expanded(
               child: Scrollbar(
                 child: ListView.builder(
