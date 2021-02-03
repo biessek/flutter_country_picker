@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   diacritic: ^0.1.0
+  equatable: ^1.2.5
 
 flutter:
   plugin:
