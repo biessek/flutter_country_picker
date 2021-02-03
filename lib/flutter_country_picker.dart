@@ -276,12 +276,7 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
                   itemCount: countries.length,
                   itemBuilder: (BuildContext context, int index) {
                     Country country = countries[index];
-                    if (filter == null ||
-                        filter == "" ||
-                        country.name
-                            .toLowerCase()
-                            .contains(filter.toLowerCase()) ||
-                        country.isoCode.contains(filter)) {
+                    if (_matchesFilter(country)) {
                       return InkWell(
                         child: widget.customItemBuilder != null
                             ? widget.customItemBuilder(
@@ -325,5 +320,13 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
         ),
       ),
     );
+  }
+
+  bool _matchesFilter(Country country) {
+    return filter == null ||
+        filter == "" ||
+        country.name.toLowerCase().contains(filter.toLowerCase()) ||
+        country.isoCode.toLowerCase().contains(filter.toLowerCase()) ||
+        country.dialingCode.contains(filter);
   }
 }
