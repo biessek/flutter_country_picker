@@ -218,11 +218,14 @@ class CountryPickerBody extends StatefulWidget {
   final Widget Function(Country country, Image flag) customItemBuilder;
   final Widget Function(TextEditingController) customInputBuilder;
   final List<Country> prioritizedCountries;
+  final Function(Country) onCountrySelected;
 
-  CountryPickerBody(
-      {this.customItemBuilder,
-      this.customInputBuilder,
-      this.prioritizedCountries});
+  CountryPickerBody({
+    this.customItemBuilder,
+    this.customInputBuilder,
+    this.prioritizedCountries,
+    this.onCountrySelected,
+  });
 
   @override
   _CountryPickerBodyState createState() => _CountryPickerBodyState();
@@ -328,7 +331,11 @@ class _CountryPickerBodyState extends State<CountryPickerBody> {
                             ),
                           ),
                     onTap: () {
-                      Navigator.pop(context, country);
+                      if (widget.onCountrySelected != null) {
+                        widget.onCountrySelected(country);
+                      } else {
+                        Navigator.pop(context, country);
+                      }
                     },
                   );
                 }
