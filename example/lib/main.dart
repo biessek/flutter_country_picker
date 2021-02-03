@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
               selectedCountry: _selected,
-              prioritizedCountries: [Country.PL],
+              prioritizedCountries: [Country.PL, Country.NO],
             ),
           ),
           RaisedButton(

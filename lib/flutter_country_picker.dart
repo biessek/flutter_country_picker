@@ -18,7 +18,7 @@ Future<List<Country>> _fetchLocalizedCountryNames() async {
     });
     result = await _platform.invokeMethod(
         'getCountryNames', <String, dynamic>{'isoCodes': isoCodes});
-  } on PlatformException catch (e) {
+  } on PlatformException {
     return Country.ALL;
   }
 
@@ -214,12 +214,7 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
     super.initState();
     countries = [];
     _fetchLocalizedCountryNames().then((renamedCountries) {
-      final List<Country> prioritizedCountries =
-          List.from(widget.prioritizedCountries);
-      if (prioritizedCountries != null && prioritizedCountries.isNotEmpty) {
-        renamedCountries.removeWhere((c) => prioritizedCountries.contains(c));
-        renamedCountries = prioritizedCountries..addAll(renamedCountries);
-      }
+      renamedCountries = _sortByPrioritizedCountriesFirst(renamedCountries);
       setState(() {
         countries = renamedCountries;
       });
@@ -230,6 +225,16 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
         filter = controller.text;
       });
     });
+  }
+
+  List<Country> _sortByPrioritizedCountriesFirst(List<Country> countries) {
+    final List<Country> prioritizedCountries =
+        List.from(widget.prioritizedCountries);
+    if (prioritizedCountries != null && prioritizedCountries.isNotEmpty) {
+      countries.removeWhere((c) => prioritizedCountries.contains(c));
+      countries = prioritizedCountries..addAll(countries);
+    }
+    return countries;
   }
 
   @override
