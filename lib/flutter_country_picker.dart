@@ -48,6 +48,7 @@ class CountryPicker extends StatelessWidget {
     this.dialingCodeTextStyle,
     this.currencyTextStyle,
     this.currencyISOTextStyle,
+    this.prioritizedCountries,
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -62,6 +63,7 @@ class CountryPicker extends StatelessWidget {
   final TextStyle dialingCodeTextStyle;
   final TextStyle currencyTextStyle;
   final TextStyle currencyISOTextStyle;
+  final List<Country> prioritizedCountries;
 
   @override
   Widget build(BuildContext context) {
@@ -122,9 +124,7 @@ class CountryPicker extends StatelessWidget {
                   : Colors.white70),
         ],
       ),
-      onTap: () {
-        _selectCountry(context, displayCountry);
-      },
+      onTap: () => _selectCountry(context, displayCountry),
     );
   }
 
@@ -157,6 +157,7 @@ class CountryPicker extends StatelessWidget {
     final Country picked = await showCountryPicker(
       context: context,
       defaultCountry: defaultCountry,
+      prioritizedCountries: prioritizedCountries,
     );
 
     if (picked != null && picked != selectedCountry) onChanged(picked);
@@ -170,6 +171,8 @@ Future<Country> showCountryPicker({
   Country defaultCountry,
   Widget Function(Country country, Image flag) customItemBuilder,
   Widget Function(TextEditingController) customInputBuilder,
+  //List of countries that you want to show on the top of the list
+  List<Country> prioritizedCountries,
 }) async {
   assert(Country.findByIsoCode(defaultCountry.isoCode) != null);
 
@@ -179,6 +182,7 @@ Future<Country> showCountryPicker({
       defaultCountry: defaultCountry,
       customItemBuilder: customItemBuilder,
       customInputBuilder: customInputBuilder,
+      prioritizedCountries: prioritizedCountries,
     ),
   );
 }
@@ -186,13 +190,15 @@ Future<Country> showCountryPicker({
 class _CountryPickerDialog extends StatefulWidget {
   final Widget Function(Country country, Image flag) customItemBuilder;
   final Widget Function(TextEditingController) customInputBuilder;
+  final List<Country> prioritizedCountries;
 
-  const _CountryPickerDialog({
-    Key key,
-    Country defaultCountry,
-    this.customItemBuilder,
-    this.customInputBuilder,
-  }) : super(key: key);
+  const _CountryPickerDialog(
+      {Key key,
+      Country defaultCountry,
+      this.customItemBuilder,
+      this.customInputBuilder,
+      this.prioritizedCountries})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _CountryPickerDialogState();
@@ -206,12 +212,16 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
   @override
   void initState() {
     super.initState();
-
-    countries = Country.ALL;
-
-    _fetchLocalizedCountryNames().then((renamed) {
+    countries = [];
+    _fetchLocalizedCountryNames().then((renamedCountries) {
+      final List<Country> prioritizedCountries =
+          List.from(widget.prioritizedCountries);
+      if (prioritizedCountries != null && prioritizedCountries.isNotEmpty) {
+        renamedCountries.removeWhere((c) => prioritizedCountries.contains(c));
+        renamedCountries = prioritizedCountries..addAll(renamedCountries);
+      }
       setState(() {
-        countries = renamed;
+        countries = renamedCountries;
       });
     });
 

@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: <Widget>[
-          new Center(
+          Center(
             child: CountryPicker(
               showDialingCode: true,
               onChanged: (Country country) {
@@ -44,6 +44,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
               selectedCountry: _selected,
+            ),
+          ),
+          Text('Countryi picker with prioritized countries'),
+          Center(
+            child: CountryPicker(
+              showDialingCode: true,
+              onChanged: (Country country) {
+                setState(() {
+                  _selected = country;
+                });
+              },
+              selectedCountry: _selected,
+              prioritizedCountries: [Country.PL],
             ),
           ),
           RaisedButton(

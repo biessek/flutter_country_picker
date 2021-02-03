@@ -1,7 +1,9 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 /// A country definition with image asset, dialing code and localized name.
-class Country {
+class Country extends Equatable {
   /// the flag image asset name
   final String asset;
 
@@ -34,7 +36,7 @@ class Country {
       o.dialingCode == this.dialingCode &&
       o.isoCode == this.isoCode &&
       o.asset == this.asset &&
-      o.name == this.name && 
+      o.name == this.name &&
       o.currency == this.currency &&
       o.currencyISO == this.currencyISO;
 
@@ -2319,4 +2321,14 @@ class Country {
       currencyISO: currencyISO ?? this.currencyISO,
     );
   }
+
+  @override
+  List<Object> get props => [
+        name,
+        isoCode,
+        dialingCode,
+        asset,
+        currency,
+        currencyISO,
+      ];
 }
