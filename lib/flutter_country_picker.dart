@@ -187,7 +187,7 @@ Future<Country> showCountryPicker({
   );
 }
 
-class _CountryPickerDialog extends StatefulWidget {
+class _CountryPickerDialog extends StatelessWidget {
   final Widget Function(Country country, Image flag) customItemBuilder;
   final Widget Function(TextEditingController) customInputBuilder;
   final List<Country> prioritizedCountries;
@@ -201,10 +201,34 @@ class _CountryPickerDialog extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _CountryPickerDialogState();
+  Widget build(BuildContext context) {
+    return Material(
+      child: Dialog(
+        child: CountryPickerBody(
+          prioritizedCountries: prioritizedCountries,
+          customInputBuilder: customInputBuilder,
+          customItemBuilder: customItemBuilder,
+        ),
+      ),
+    );
+  }
 }
 
-class _CountryPickerDialogState extends State<_CountryPickerDialog> {
+class CountryPickerBody extends StatefulWidget {
+  final Widget Function(Country country, Image flag) customItemBuilder;
+  final Widget Function(TextEditingController) customInputBuilder;
+  final List<Country> prioritizedCountries;
+
+  CountryPickerBody(
+      {this.customItemBuilder,
+      this.customInputBuilder,
+      this.prioritizedCountries});
+
+  @override
+  _CountryPickerBodyState createState() => _CountryPickerBodyState();
+}
+
+class _CountryPickerBodyState extends State<CountryPickerBody> {
   TextEditingController controller = new TextEditingController();
   String filter;
   List<Country> countries;
@@ -245,80 +269,75 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Dialog(
-        child: Column(
-          children: <Widget>[
-            widget.customInputBuilder == null
-                ? TextField(
-                    decoration: InputDecoration(
-                      hintText:
-                          MaterialLocalizations.of(context).searchFieldLabel,
-                      prefixIcon: Icon(Icons.search),
-                      suffixIcon: filter == null || filter == ""
-                          ? Container(
-                              height: 0.0,
-                              width: 0.0,
-                            )
-                          : InkWell(
-                              child: Icon(Icons.clear),
-                              onTap: () {
-                                controller.clear();
-                              },
-                            ),
-                    ),
-                    controller: controller,
-                  )
-                : widget.customInputBuilder(controller),
-            Expanded(
-              child: Scrollbar(
-                child: ListView.builder(
-                  itemCount: countries.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Country country = countries[index];
-                    if (_matchesFilter(country)) {
-                      return InkWell(
-                        child: widget.customItemBuilder != null
-                            ? widget.customItemBuilder(
-                                country,
+    return Column(
+      children: <Widget>[
+        widget.customInputBuilder == null
+            ? TextField(
+                decoration: InputDecoration(
+                  hintText: MaterialLocalizations.of(context).searchFieldLabel,
+                  prefixIcon: Icon(Icons.search),
+                  suffixIcon: filter == null || filter == ""
+                      ? Container(
+                          height: 0.0,
+                          width: 0.0,
+                        )
+                      : InkWell(
+                          child: Icon(Icons.clear),
+                          onTap: () {
+                            controller.clear();
+                          },
+                        ),
+                ),
+                controller: controller,
+              )
+            : widget.customInputBuilder(controller),
+        Expanded(
+          child: Scrollbar(
+            child: ListView.builder(
+              itemCount: countries.length,
+              itemBuilder: (BuildContext context, int index) {
+                Country country = countries[index];
+                if (_matchesFilter(country)) {
+                  return InkWell(
+                    child: widget.customItemBuilder != null
+                        ? widget.customItemBuilder(
+                            country,
+                            Image.asset(
+                              country.asset,
+                              package: "flutter_country_picker",
+                            ))
+                        : ListTile(
+                            trailing: Text("+ ${country.dialingCode}"),
+                            title: Row(
+                              children: <Widget>[
                                 Image.asset(
                                   country.asset,
                                   package: "flutter_country_picker",
-                                ))
-                            : ListTile(
-                                trailing: Text("+ ${country.dialingCode}"),
-                                title: Row(
-                                  children: <Widget>[
-                                    Image.asset(
-                                      country.asset,
-                                      package: "flutter_country_picker",
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin: EdgeInsets.only(left: 8.0),
-                                        child: Text(
-                                          country.name,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
                                 ),
-                              ),
-                        onTap: () {
-                          Navigator.pop(context, country);
-                        },
-                      );
-                    }
-                    return Container();
-                  },
-                ),
-              ),
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      country.name,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                    onTap: () {
+                      Navigator.pop(context, country);
+                    },
+                  );
+                }
+                return Container();
+              },
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
