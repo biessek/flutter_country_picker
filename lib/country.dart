@@ -2059,7 +2059,6 @@ class Country extends Equatable {
     AT,
     AU,
     AW,
-    AX,
     AZ,
     BA,
     BB,
