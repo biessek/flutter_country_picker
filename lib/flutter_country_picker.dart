@@ -240,13 +240,10 @@ class _CountryPickerBodyState extends State<CountryPickerBody> {
   void initState() {
     super.initState();
     countries = [];
-    _fetchLocalizedCountryNames().then((renamedCountries) {
-      renamedCountries = _sortByPrioritizedCountriesFirst(renamedCountries);
-      setState(() {
-        countries = renamedCountries;
-      });
+    final List<Country> allCountries = List.from(Country.ALL);
+    setState(() {
+      countries = _sortByPrioritizedCountriesFirst(allCountries);
     });
-
     controller.addListener(() {
       setState(() {
         filter = controller.text;
