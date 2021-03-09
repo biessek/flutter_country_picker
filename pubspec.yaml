@@ -1,6 +1,6 @@
 name: flutter_country_picker
 description: A new flutter plugin project.
-version: 1.0.0
+version: 1.0.0-nullsafety.1
 author: Alessandro Biessek <alessandrobiessek@gmail.com>
 homepage: https://github.com/biessek/flutter_country_picker
 
