@@ -8,8 +8,8 @@ export 'country.dart';
 
 const _platform = const MethodChannel('biessek.rocks/flutter_country_picker');
 Future<List<Country>> _fetchLocalizedCountryNames() async {
-  List<Country> renamed = new List();
-  Map result;
+  List<Country> renamed = [];
+  Map? result;
   try {
     var isoCodes = <String>[];
     Country.ALL.forEach((Country country) {
@@ -22,7 +22,7 @@ Future<List<Country>> _fetchLocalizedCountryNames() async {
   }
 
   for (var country in Country.ALL) {
-    renamed.add(country.copyWith(name: result[country.isoCode]));
+    renamed.add(country.copyWith(name: result![country.isoCode]));
   }
   renamed.sort(
       (Country a, Country b) => removeDiacritics(a.name).compareTo(b.name));
@@ -34,9 +34,9 @@ Future<List<Country>> _fetchLocalizedCountryNames() async {
 /// pre defined list, see [Country.ALL]
 class CountryPicker extends StatelessWidget {
   const CountryPicker({
-    Key key,
+    Key? key,
     this.selectedCountry,
-    @required this.onChanged,
+    required this.onChanged,
     this.dense = false,
     this.showFlag = true,
     this.showDialingCode = false,
@@ -49,7 +49,7 @@ class CountryPicker extends StatelessWidget {
     this.currencyISOTextStyle,
   }) : super(key: key);
 
-  final Country selectedCountry;
+  final Country? selectedCountry;
   final ValueChanged<Country> onChanged;
   final bool dense;
   final bool showFlag;
@@ -57,15 +57,15 @@ class CountryPicker extends StatelessWidget {
   final bool showName;
   final bool showCurrency;
   final bool showCurrencyISO;
-  final TextStyle nameTextStyle;
-  final TextStyle dialingCodeTextStyle;
-  final TextStyle currencyTextStyle;
-  final TextStyle currencyISOTextStyle;
+  final TextStyle? nameTextStyle;
+  final TextStyle? dialingCodeTextStyle;
+  final TextStyle? currencyTextStyle;
+  final TextStyle? currencyISOTextStyle;
 
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
-    Country displayCountry = selectedCountry;
+    Country? displayCountry = selectedCountry;
 
     if (displayCountry == null) {
       displayCountry =
@@ -73,11 +73,11 @@ class CountryPicker extends StatelessWidget {
     }
 
     return dense
-        ? _renderDenseDisplay(context, displayCountry)
+        ? _renderDenseDisplay(context, displayCountry!)
         : _renderDefaultDisplay(context, displayCountry);
   }
 
-  _renderDefaultDisplay(BuildContext context, Country displayCountry) {
+  _renderDefaultDisplay(BuildContext context, Country? displayCountry) {
     return InkWell(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -86,7 +86,7 @@ class CountryPicker extends StatelessWidget {
           if (showFlag)
             Container(
                 child: Image.asset(
-              displayCountry.asset,
+              displayCountry!.asset,
               package: "flutter_country_picker",
               height: 32.0,
               fit: BoxFit.fitWidth,
@@ -94,25 +94,25 @@ class CountryPicker extends StatelessWidget {
           if (showName)
             Container(
                 child: Text(
-              " ${displayCountry.name}",
+              " ${displayCountry!.name}",
               style: nameTextStyle,
             )),
           if (showDialingCode)
             Container(
                 child: Text(
-              " (+${displayCountry.dialingCode})",
+              " (+${displayCountry!.dialingCode})",
               style: dialingCodeTextStyle,
             )),
           if (showCurrency)
             Container(
                 child: Text(
-              " ${displayCountry.currency}",
+              " ${displayCountry!.currency}",
               style: currencyTextStyle,
             )),
           if (showCurrencyISO)
             Container(
                 child: Text(
-              " ${displayCountry.currencyISO}",
+              " ${displayCountry!.currencyISO}",
               style: currencyISOTextStyle,
             )),
           Icon(Icons.arrow_drop_down,
@@ -122,7 +122,7 @@ class CountryPicker extends StatelessWidget {
         ],
       ),
       onTap: () {
-        _selectCountry(context, displayCountry);
+        _selectCountry(context, displayCountry!);
       },
     );
   }
@@ -153,7 +153,7 @@ class CountryPicker extends StatelessWidget {
 
   Future<Null> _selectCountry(
       BuildContext context, Country defaultCountry) async {
-    final Country picked = await showCountryPicker(
+    final Country? picked = await showCountryPicker(
       context: context,
       defaultCountry: defaultCountry,
     );
@@ -164,9 +164,9 @@ class CountryPicker extends StatelessWidget {
 
 /// Display a [Dialog] with the country list to selection
 /// you can pass and [defaultCountry], see [Country.findByIsoCode]
-Future<Country> showCountryPicker({
-  BuildContext context,
-  Country defaultCountry,
+Future<Country?> showCountryPicker({
+  required BuildContext context,
+  required Country defaultCountry,
 }) async {
   assert(Country.findByIsoCode(defaultCountry.isoCode) != null);
 
@@ -180,8 +180,8 @@ Future<Country> showCountryPicker({
 
 class _CountryPickerDialog extends StatefulWidget {
   const _CountryPickerDialog({
-    Key key,
-    Country defaultCountry,
+    Key? key,
+    Country? defaultCountry,
   }) : super(key: key);
 
   @override
@@ -190,8 +190,8 @@ class _CountryPickerDialog extends StatefulWidget {
 
 class _CountryPickerDialogState extends State<_CountryPickerDialog> {
   TextEditingController controller = new TextEditingController();
-  String filter;
-  List<Country> countries;
+  String? filter;
+  List<Country> countries=[];
 
   @override
   void initState() {
@@ -252,8 +252,8 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
                         filter == "" ||
                         country.name
                             .toLowerCase()
-                            .contains(filter.toLowerCase()) ||
-                        country.isoCode.contains(filter)) {
+                            .contains(filter!.toLowerCase()) ||
+                        country.isoCode.contains(filter!)) {
                       return InkWell(
                         child: ListTile(
                           trailing: Text("+ ${country.dialingCode}"),
