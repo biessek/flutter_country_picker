@@ -1748,7 +1748,7 @@ class Country {
     asset: "assets/flags/sz_flag.png",
     dialingCode: "268",
     isoCode: "SZ",
-    name: "Swaziland",
+    name: "eSwatini (Swaziland)",
     currency: "Swazi lilangeni",
     currencyISO: "SZL",
   );
