@@ -33,16 +33,42 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: new AppBar(
         title: Text('Flutter Country Picker Demo'),
       ),
-      body: new Center(
-        child: CountryPicker(
-          showDialingCode: true,
-          onChanged: (Country country) {
-            setState(() {
-              _selected = country;
-            });
-          },
-          selectedCountry: _selected,
-        ),
+      body: Column(
+        children: <Widget>[
+          Center(
+            child: CountryPicker(
+              showDialingCode: true,
+              onChanged: (Country country) {
+                setState(() {
+                  _selected = country;
+                });
+              },
+              selectedCountry: _selected,
+            ),
+          ),
+          Text('Countryi picker with prioritized countries'),
+          Center(
+            child: CountryPicker(
+              showDialingCode: true,
+              onChanged: (Country country) {
+                setState(() {
+                  _selected = country;
+                });
+              },
+              selectedCountry: _selected,
+              prioritizedCountries: [Country.PL, Country.NO],
+            ),
+          ),
+          RaisedButton(
+            child: Text('Show custom dialog'),
+            onPressed: () => showCountryPicker(
+                context: context,
+                defaultCountry: _selected,
+                customItemBuilder: (country, image) {
+                  return Text(country.name);
+                }),
+          )
+        ],
       ),
     );
   }

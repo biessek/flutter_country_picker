@@ -7,6 +7,7 @@ import 'package:diacritic/diacritic.dart';
 export 'country.dart';
 
 const _platform = const MethodChannel('biessek.rocks/flutter_country_picker');
+
 Future<List<Country>> _fetchLocalizedCountryNames() async {
   List<Country> renamed = new List();
   Map result;
@@ -17,7 +18,7 @@ Future<List<Country>> _fetchLocalizedCountryNames() async {
     });
     result = await _platform.invokeMethod(
         'getCountryNames', <String, dynamic>{'isoCodes': isoCodes});
-  } on PlatformException catch (e) {
+  } on PlatformException {
     return Country.ALL;
   }
 
@@ -47,6 +48,7 @@ class CountryPicker extends StatelessWidget {
     this.dialingCodeTextStyle,
     this.currencyTextStyle,
     this.currencyISOTextStyle,
+    this.prioritizedCountries,
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -61,6 +63,7 @@ class CountryPicker extends StatelessWidget {
   final TextStyle dialingCodeTextStyle;
   final TextStyle currencyTextStyle;
   final TextStyle currencyISOTextStyle;
+  final List<Country> prioritizedCountries;
 
   @override
   Widget build(BuildContext context) {
@@ -121,9 +124,7 @@ class CountryPicker extends StatelessWidget {
                   : Colors.white70),
         ],
       ),
-      onTap: () {
-        _selectCountry(context, displayCountry);
-      },
+      onTap: () => _selectCountry(context, displayCountry),
     );
   }
 
@@ -156,6 +157,7 @@ class CountryPicker extends StatelessWidget {
     final Country picked = await showCountryPicker(
       context: context,
       defaultCountry: defaultCountry,
+      prioritizedCountries: prioritizedCountries,
     );
 
     if (picked != null && picked != selectedCountry) onChanged(picked);
@@ -167,28 +169,69 @@ class CountryPicker extends StatelessWidget {
 Future<Country> showCountryPicker({
   BuildContext context,
   Country defaultCountry,
+  Widget Function(Country country, Image flag) customItemBuilder,
+  Widget Function(TextEditingController) customInputBuilder,
+  //List of countries that you want to show on the top of the list
+  List<Country> prioritizedCountries,
 }) async {
   assert(Country.findByIsoCode(defaultCountry.isoCode) != null);
 
   return await showDialog<Country>(
     context: context,
     builder: (BuildContext context) => _CountryPickerDialog(
-          defaultCountry: defaultCountry,
-        ),
+      defaultCountry: defaultCountry,
+      customItemBuilder: customItemBuilder,
+      customInputBuilder: customInputBuilder,
+      prioritizedCountries: prioritizedCountries,
+    ),
   );
 }
 
-class _CountryPickerDialog extends StatefulWidget {
-  const _CountryPickerDialog({
-    Key key,
-    Country defaultCountry,
-  }) : super(key: key);
+class _CountryPickerDialog extends StatelessWidget {
+  final Widget Function(Country country, Image flag) customItemBuilder;
+  final Widget Function(TextEditingController) customInputBuilder;
+  final List<Country> prioritizedCountries;
+
+  const _CountryPickerDialog(
+      {Key key,
+      Country defaultCountry,
+      this.customItemBuilder,
+      this.customInputBuilder,
+      this.prioritizedCountries})
+      : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _CountryPickerDialogState();
+  Widget build(BuildContext context) {
+    return Material(
+      child: Dialog(
+        child: CountryPickerBody(
+          prioritizedCountries: prioritizedCountries,
+          customInputBuilder: customInputBuilder,
+          customItemBuilder: customItemBuilder,
+        ),
+      ),
+    );
+  }
 }
 
-class _CountryPickerDialogState extends State<_CountryPickerDialog> {
+class CountryPickerBody extends StatefulWidget {
+  final Widget Function(Country country, Image flag) customItemBuilder;
+  final Widget Function(TextEditingController) customInputBuilder;
+  final List<Country> prioritizedCountries;
+  final Function(Country) onCountrySelected;
+
+  CountryPickerBody({
+    this.customItemBuilder,
+    this.customInputBuilder,
+    this.prioritizedCountries,
+    this.onCountrySelected,
+  });
+
+  @override
+  _CountryPickerBodyState createState() => _CountryPickerBodyState();
+}
+
+class _CountryPickerBodyState extends State<CountryPickerBody> {
   TextEditingController controller = new TextEditingController();
   String filter;
   List<Country> countries;
@@ -196,20 +239,26 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
   @override
   void initState() {
     super.initState();
-
-    countries = Country.ALL;
-
-    _fetchLocalizedCountryNames().then((renamed) {
-      setState(() {
-        countries = renamed;
-      });
+    countries = [];
+    final List<Country> allCountries = List.from(Country.ALL);
+    setState(() {
+      countries = _sortByPrioritizedCountriesFirst(allCountries);
     });
-
     controller.addListener(() {
       setState(() {
         filter = controller.text;
       });
     });
+  }
+
+  List<Country> _sortByPrioritizedCountriesFirst(List<Country> countries) {
+    final List<Country> prioritizedCountries =
+        List.from(widget.prioritizedCountries);
+    if (prioritizedCountries != null && prioritizedCountries.isNotEmpty) {
+      countries.removeWhere((c) => prioritizedCountries.contains(c));
+      countries = prioritizedCountries..addAll(countries);
+    }
+    return countries;
   }
 
   @override
@@ -220,75 +269,87 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Dialog(
-        child: Column(
-          children: <Widget>[
-            new TextField(
-              decoration: new InputDecoration(
-                hintText: MaterialLocalizations.of(context).searchFieldLabel,
-                prefixIcon: Icon(Icons.search),
-                suffixIcon: filter == null || filter == ""
-                    ? Container(
-                        height: 0.0,
-                        width: 0.0,
-                      )
-                    : InkWell(
-                        child: Icon(Icons.clear),
-                        onTap: () {
-                          controller.clear();
-                        },
-                      ),
-              ),
-              controller: controller,
-            ),
-            Expanded(
-              child: Scrollbar(
-                child: ListView.builder(
-                  itemCount: countries.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Country country = countries[index];
-                    if (filter == null ||
-                        filter == "" ||
-                        country.name
-                            .toLowerCase()
-                            .contains(filter.toLowerCase()) ||
-                        country.isoCode.contains(filter)) {
-                      return InkWell(
-                        child: ListTile(
-                          trailing: Text("+ ${country.dialingCode}"),
-                          title: Row(
-                            children: <Widget>[
-                              Image.asset(
-                                country.asset,
-                                package: "flutter_country_picker",
-                              ),
-                              Expanded(
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 8.0),
-                                  child: Text(
-                                    country.name,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+    return Column(
+      children: <Widget>[
+        widget.customInputBuilder == null
+            ? TextField(
+                decoration: InputDecoration(
+                  hintText: MaterialLocalizations.of(context).searchFieldLabel,
+                  prefixIcon: Icon(Icons.search),
+                  suffixIcon: filter == null || filter == ""
+                      ? Container(
+                          height: 0.0,
+                          width: 0.0,
+                        )
+                      : InkWell(
+                          child: Icon(Icons.clear),
+                          onTap: () {
+                            controller.clear();
+                          },
+                        ),
+                ),
+                controller: controller,
+              )
+            : widget.customInputBuilder(controller),
+        Expanded(
+          child: Scrollbar(
+            child: ListView.builder(
+              itemCount: countries.length,
+              itemBuilder: (BuildContext context, int index) {
+                Country country = countries[index];
+                if (_matchesFilter(country)) {
+                  return InkWell(
+                    child: widget.customItemBuilder != null
+                        ? widget.customItemBuilder(
+                            country,
+                            Image.asset(
+                              country.asset,
+                              package: "flutter_country_picker",
+                            ))
+                        : ListTile(
+                            trailing: Text("+ ${country.dialingCode}"),
+                            title: Row(
+                              children: <Widget>[
+                                Image.asset(
+                                  country.asset,
+                                  package: "flutter_country_picker",
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      country.name,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        onTap: () {
-                          Navigator.pop(context, country);
-                        },
-                      );
-                    }
-                    return Container();
-                  },
-                ),
-              ),
+                    onTap: () {
+                      if (widget.onCountrySelected != null) {
+                        widget.onCountrySelected(country);
+                      } else {
+                        Navigator.pop(context, country);
+                      }
+                    },
+                  );
+                }
+                return Container();
+              },
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
+  }
+
+  bool _matchesFilter(Country country) {
+    return filter == null ||
+        filter == "" ||
+        country.name.toLowerCase().contains(filter.toLowerCase()) ||
+        country.isoCode.toLowerCase().contains(filter.toLowerCase()) ||
+        country.dialingCode.contains(filter);
   }
 }
