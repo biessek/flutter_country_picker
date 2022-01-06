@@ -41,6 +41,12 @@ class CountryPicker extends StatelessWidget {
     this.showFlag = true,
     this.showDialingCode = false,
     this.showName = true,
+    this.showCurrency = false,
+    this.showCurrencyISO = false,
+    this.nameTextStyle,
+    this.dialingCodeTextStyle,
+    this.currencyTextStyle,
+    this.currencyISOTextStyle,
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -49,6 +55,12 @@ class CountryPicker extends StatelessWidget {
   final bool showFlag;
   final bool showDialingCode;
   final bool showName;
+  final bool showCurrency;
+  final bool showCurrencyISO;
+  final TextStyle nameTextStyle;
+  final TextStyle dialingCodeTextStyle;
+  final TextStyle currencyTextStyle;
+  final TextStyle currencyISOTextStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -71,29 +83,38 @@ class CountryPicker extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Container(
-              child: showFlag
-                  ? Image.asset(
-                      displayCountry.asset,
-                      package: "flutter_country_picker",
-                      height: 32.0,
-                      fit: BoxFit.fitWidth,
-                    )
-                  : Container()),
-          Container(
-              child: showDialingCode
-                  ? Text(
-                      " (+${displayCountry.dialingCode})",
-                      style: TextStyle(fontSize: 20.0),
-                    )
-                  : Container()),
-          Container(
-              child: showName
-                  ? Text(
-                      " ${displayCountry.name}",
-                      style: TextStyle(fontSize: 22.0),
-                    )
-                  : Container()),
+          if (showFlag)
+            Container(
+                child: Image.asset(
+              displayCountry.asset,
+              package: "flutter_country_picker",
+              height: 32.0,
+              fit: BoxFit.fitWidth,
+            )),
+          if (showName)
+            Container(
+                child: Text(
+              " ${displayCountry.name}",
+              style: nameTextStyle,
+            )),
+          if (showDialingCode)
+            Container(
+                child: Text(
+              " (+${displayCountry.dialingCode})",
+              style: dialingCodeTextStyle,
+            )),
+          if (showCurrency)
+            Container(
+                child: Text(
+              " ${displayCountry.currency}",
+              style: currencyTextStyle,
+            )),
+          if (showCurrencyISO)
+            Container(
+                child: Text(
+              " ${displayCountry.currencyISO}",
+              style: currencyISOTextStyle,
+            )),
           Icon(Icons.arrow_drop_down,
               color: Theme.of(context).brightness == Brightness.light
                   ? Colors.grey.shade700
@@ -141,7 +162,7 @@ class CountryPicker extends StatelessWidget {
   }
 }
 
-/// Display an [Dialog] with the country list to selection
+/// Display a [Dialog] with the country list to selection
 /// you can pass and [defaultCountry], see [Country.findByIsoCode]
 Future<Country> showCountryPicker({
   BuildContext context,
@@ -193,8 +214,8 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
 
   @override
   void dispose() {
-    super.dispose();
     controller.dispose();
+    super.dispose();
   }
 
   @override

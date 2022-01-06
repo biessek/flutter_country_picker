@@ -182,6 +182,6 @@ DerivedData/
 !*.xcodeproj/xcshareddata/
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
-
+flutter_export_environment.sh
 
 # End of https://www.gitignore.io/api/dart,xcode,androidstudio
